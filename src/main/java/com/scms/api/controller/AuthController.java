@@ -28,6 +28,6 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logout() {
-        return "Registered!";
+        return "Logged out successfully!";
     }
 }
