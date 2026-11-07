@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "sicknesses")
+@Table(name = "illnesses")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Sickness {
+public class Illness {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +24,13 @@ public class Sickness {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "sickness_medicine",
-            joinColumns = @JoinColumn(name = "sickness_id"),
+            name = "illness_medicine",
+            joinColumns = @JoinColumn(name = "illness_id"),
             inverseJoinColumns = @JoinColumn(name = "medicine_id")
     )
-    private List<Medicine> recommendedMedicines;
+    private List<Medicine> recommendedMedicines = new ArrayList<>();
+
+    public Illness(String name) {
+        this.name = name;
+    }
 }

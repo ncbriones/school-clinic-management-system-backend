@@ -3,6 +3,8 @@ package com.scms.api.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "consultations")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Consultation {
 
     @Id
@@ -27,12 +30,14 @@ public class Consultation {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "sickness_id", nullable = false)
-    private Sickness sickness;
+    @JoinColumn(name = "illness_id", nullable = false)
+    private Illness illness;
 
     @ManyToOne
     @JoinColumn(name = "medicine_id", nullable = false)
     private Medicine medicineGiven;
 
+    @CreatedDate
+    @Column(name = "visited_at", updatable = false)
     private LocalDateTime visitedAt;
 }
