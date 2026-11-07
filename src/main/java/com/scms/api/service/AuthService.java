@@ -46,7 +46,7 @@ public class AuthService {
         return new LoginResponse(
             "Bearer",
             token,
-            userDetails.getUsername(),
+            userDetails.getName(),
             userDetails.getRole()
         );
     }
