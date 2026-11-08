@@ -56,17 +56,35 @@ public class GlobalExceptionHandler {
                 "Unauthorized access. Token is expired."
         );
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
     }
 
-    @ExceptionHandler({AuthorizationDeniedException.class})
-    public ResponseEntity<ErrorResponse> handleUnathorizedAccess(Exception ex) {
+    // Handles unathorized access
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleUnathorizedAccess(AuthorizationDeniedException ex) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Unathorized access."
         );
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
+    // Handles unfound entities (e.g., Patient, Consultation, Medicine, Illness, User)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundEntites(EntityNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
     }
 
     // Handles any other unhandled exceptions
