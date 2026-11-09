@@ -1,12 +1,13 @@
 package com.scms.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "illnesses")
@@ -22,15 +23,26 @@ public class Illness {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
             name = "illness_medicine",
             joinColumns = @JoinColumn(name = "illness_id"),
             inverseJoinColumns = @JoinColumn(name = "medicine_id")
     )
-    private List<Medicine> recommendedMedicines = new ArrayList<>();
+    @JsonIgnoreProperties("treatedIllnesses")
+    private Set<Medicine> recommendedMedicines = new HashSet<>();
 
     public Illness(String name) {
         this.name = name;
+    }
+
+    public void addMedicine(Medicine medicine) {
+
+        if (medicine == null) return;
+
+        if (!this.recommendedMedicines.contains(medicine)) {
+            this.recommendedMedicines.add(medicine);
+            medicine.getTreatedIllnesses().add(this);
+        }
     }
 }

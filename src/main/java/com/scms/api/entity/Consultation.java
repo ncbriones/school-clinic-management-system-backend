@@ -1,5 +1,6 @@
 package com.scms.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,16 +26,19 @@ public class Consultation {
     @Column(nullable = false)
     private Integer medicineQuantityGiven;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonIgnoreProperties({"consultations"})
     private Patient patient;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "illness_id", nullable = false)
+    @JsonIgnoreProperties({"recommendedMedicines"})
     private Illness illness;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicine_id", nullable = false)
+    @JsonIgnoreProperties({"treatedIllnesses"})
     private Medicine medicineGiven;
 
     @CreatedDate
