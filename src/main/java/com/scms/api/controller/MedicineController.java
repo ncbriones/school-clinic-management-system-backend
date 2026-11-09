@@ -1,12 +1,9 @@
 package com.scms.api.controller;
 
 import com.scms.api.dto.request.CreateMedicineRequest;
-import com.scms.api.dto.response.CreateMedicineResponse;
-import com.scms.api.dto.response.GetMedicinesResponse;
 import com.scms.api.entity.Medicine;
 import com.scms.api.service.MedicineService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +30,12 @@ public class MedicineController {
 
     @PostMapping
     @PreAuthorize("hasRole('NURSE')")
-    public ResponseEntity<CreateMedicineResponse> createMedicine(
+    public ResponseEntity<Void> createMedicine(
             @Valid @RequestBody CreateMedicineRequest request
     ) {
-        CreateMedicineResponse response = medicineService.addMedicine(request);
+        medicineService.addMedicine(request);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
 
 }
