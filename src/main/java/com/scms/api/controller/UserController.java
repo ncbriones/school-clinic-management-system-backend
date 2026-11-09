@@ -1,11 +1,11 @@
 package com.scms.api.controller;
 
-import com.scms.api.dto.request.CreateNurseRequest;
-import com.scms.api.dto.response.CreateNurseResponse;
-import com.scms.api.dto.response.GetNursesResponse;
+import com.scms.api.dto.request.CreateUserRequest;
+import com.scms.api.dto.response.CreateUserResponse;
+import com.scms.api.dto.response.GetUsersResponse;
+import com.scms.api.entity.Role;
 import com.scms.api.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,27 +24,29 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateNurseResponse> createNurse(@Valid @RequestBody CreateNurseRequest request) {
-        CreateNurseResponse response = userService.createNewNurse(request);
+    public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        CreateUserResponse response = userService.createUser(request);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<GetNursesResponse>> getAllNurses() {
-        List<GetNursesResponse> allNurse = userService.getAllNurse();
-
-        return ResponseEntity.status(HttpStatus.OK).body(allNurse);
+    public ResponseEntity<List<GetUsersResponse>> getUsers(@RequestParam(required = false) Role role) {
+        if (role != null) {
+            List<GetUsersResponse> response = userService.getUsersByRole(role);
+            return ResponseEntity.ok(response);
+        }
+        List<GetUsersResponse> response = userService.getUsers();
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{nurseId}")
+    @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteNurseById(@PathVariable Long nurseId) {
-        userService.deleteNurseById(nurseId);
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long id) {
+        userService.deleteUserById(id);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
-
+        return ResponseEntity.noContent().build();
     }
 
 }

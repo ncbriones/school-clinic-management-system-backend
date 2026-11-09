@@ -28,7 +28,7 @@ public class MedicineController {
     public ResponseEntity<List<Medicine>> getAllMedicines() {
         List<Medicine> allMedicines = medicineService.getAllMedicines();
 
-        return ResponseEntity.status(HttpStatus.OK).body(allMedicines);
+        return ResponseEntity.ok(allMedicines);
     }
 
     @PostMapping
@@ -38,7 +38,7 @@ public class MedicineController {
     ) {
         CreateMedicineResponse response = medicineService.addMedicine(request);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
 }
