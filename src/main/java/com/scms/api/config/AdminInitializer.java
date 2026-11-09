@@ -20,7 +20,7 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String adminEmail = "admin@gmail.com";
+        final String adminEmail = "admin@gmail.com";
 
         if (!userRepository.existsByEmail(adminEmail)) {
             User admin = new User();
