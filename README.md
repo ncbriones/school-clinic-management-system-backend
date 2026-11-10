@@ -33,6 +33,7 @@ src/main/java/com/scms/api/
 - Spring Boot
 - Spring Data JPA
 - Spring Security
+- MySQL
 
 ### Setup & Run
 
