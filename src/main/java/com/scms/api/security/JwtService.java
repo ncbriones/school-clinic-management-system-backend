@@ -1,5 +1,6 @@
 package com.scms.api.security;
 
+import com.scms.api.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,6 +28,14 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Role extractRole(String token) {
+        return extractClaim(token, claims -> {
+            String role = claims.get("role", String.class);
+            return Role.valueOf(role);
+        });
+    }
+
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -40,9 +49,8 @@ public class JwtService {
                 .getPayload();
     }
 
-    public boolean isTokenValid(String token, CustomUserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -65,7 +73,7 @@ public class JwtService {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey())
                 .compact();
     }
 
