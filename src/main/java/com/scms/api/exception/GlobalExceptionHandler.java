@@ -4,7 +4,9 @@ import com.scms.api.dto.response.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -61,22 +63,33 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    // Handles unathorized access
+    // Handles denied authorization
     @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleUnathorizedAccess(AuthorizationDeniedException ex) {
+    public ResponseEntity<ErrorResponse> handleAuthorizationDenied(AuthorizationDeniedException ex) {
         ErrorResponse response = new ErrorResponse(
-                HttpStatus.UNAUTHORIZED.value(),
-                "Unathorized access."
+                HttpStatus.FORBIDDEN.value(),
+                "You do not have permission to perform this action"
         );
 
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.FORBIDDEN)
                 .body(response);
     }
 
+    @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidLogin(Exception ex)  {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+
     // Handles unfound entities (e.g., Patient, Consultation, Medicine, Illness, User)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundEntites(EntityNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNotFoundEntities(EntityNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
